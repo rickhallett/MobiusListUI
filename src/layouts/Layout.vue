@@ -76,7 +76,7 @@
             if (window.location.href.split(':')[1] === '//localhost') {
                 EventBus.$domain = 'https://localhost:5001'
             } else {
-                EventBus.$domain = 'http://mobiuscore222.azurewebsites.net'
+                EventBus.$domain = 'https://mobiuscore222.azurewebsites.net'
             }
 
             console.log(EventBus.$domain)
