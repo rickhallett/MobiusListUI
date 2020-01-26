@@ -67,7 +67,7 @@
         },
         methods: {
             navTo(path) {
-                this.$router.push({ path: path }).catch(err => err)
+                this.$router.push({ path: path }).catch(err => err);
             }
         },
         created() {
@@ -88,5 +88,9 @@
       font-size: 60px;
       margin-left: 16px;
     }
+  }
+
+  .notification {
+     text-align: center;
   }
 </style>
