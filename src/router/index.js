@@ -3,7 +3,9 @@ import VueRouter from 'vue-router'
 
 import routes from './routes'
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
+
+export const EventBus = new Vue();
 
 /*
  * If not building with SSR mode, you can

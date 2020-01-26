@@ -65,6 +65,8 @@
 </template>
 
 <script>
+    import {EventBus} from "../router";
+
     export default {
         name: "Products",
         data() {
@@ -131,7 +133,7 @@
                     categoryId: Number.parseInt(this.newProduct.categoryId.value)
                 };
                 console.log('newProduct', newProduct);
-                this.$axios.post('https://localhost:5001/api/v1/products', newProduct)
+                this.$axios.post(`${EventBus.$domain}/api/v1/products`, newProduct)
                     .then(res => {
                         console.log(res);
                         if (res.status === 201) {
@@ -169,7 +171,7 @@
                 }
             },
             createCategory() {
-                this.$axios.post('https://localhost:5001/api/v1/category', this.newCategory)
+                this.$axios.post(`${EventBus.$domain}/api/v1/category`, this.newCategory)
                     .then(res => {
                         console.log(res);
                         if (res.status === 201) {
@@ -199,7 +201,7 @@
             },
             getAllProductsByCategory(name) {
                 this.tableLoading = true;
-                this.$axios.get(`https://localhost:5001/api/v1/products?category=${name}`)
+                this.$axios.get(`${EventBus.$domain}/api/v1/products?category=${name}`)
                     .then(res => {
                         this.products = res.data;
                         this.tableLoading = false;
@@ -212,7 +214,7 @@
             },
             getAllProducts() {
                 this.tableLoading = true;
-                this.$axios.get('https://localhost:5001/api/v1/products')
+                this.$axios.get(`${EventBus.$domain}/api/v1/products`)
                     .then(res => {
                         this.tableLoading = false;
                         this.products = res.data;
@@ -225,7 +227,7 @@
                     });
             },
             getAllCategories() {
-                this.$axios.get('https://localhost:5001/api/v1/category')
+                this.$axios.get(`${EventBus.$domain}/api/v1/category`)
                     .then(res => {
                         this.categories = res.data.map(cat => {
                             return {

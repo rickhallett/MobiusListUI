@@ -58,6 +58,8 @@
 </template>
 
 <script>
+    import {EventBus} from "../router";
+
     export default {
         name: 'MyLayout',
         data() {
@@ -69,6 +71,15 @@
             navTo(path) {
                 this.$router.push({ path: path }).catch(err => err);
             }
+        },
+        beforeCreate() {
+            if (window.location.href.split(':')[1] === '//localhost') {
+                EventBus.$domain = 'https://localhost:5001'
+            } else {
+                EventBus.$domain = 'http://mobiuscore222.azurewebsites.net'
+            }
+
+            console.log(EventBus.$domain)
         },
         created() {
 
