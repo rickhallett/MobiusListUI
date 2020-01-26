@@ -33,8 +33,8 @@
             <q-input dense label="Name" placeholer="Name" v-model="newCategory.name"></q-input>
           </q-card-section>
           <q-card-section class="row justify-end">
-            <q-btn flat size="20px" icon="backup" color="secondary" class="submit-button"></q-btn>
-            <q-btn flat size="20px" icon="cancel" color="negative" class="submit-button"></q-btn>
+            <q-btn flat size="20px" icon="backup" color="secondary" class="submit-button" @click="createCategory"></q-btn>
+            <q-btn flat size="20px" icon="cancel" color="negative" class="submit-button" @click="clearCategory"></q-btn>
           </q-card-section>
         </q-card>
       </div>
@@ -103,6 +103,27 @@
         methods: {
             createProduct() {
                 console.log('newProduct1', this.newProduct);
+
+                function capitaliseFirst(word) {
+                    let capitalise = word.split('');
+                    capitalise[0] = capitalise[0].toUpperCase();
+                    return capitalise.join('');
+                }
+
+                var valid = true;
+                for (let field in this.newProduct) {
+                    if (!this.newProduct[field]) {
+                        valid = false;
+                        this.$q.notify({
+                            message: `${capitaliseFirst(field)} cannot be blank`,
+                            color: 'negative',
+                            classes: 'notification'
+                        });
+                    }
+                }
+
+                if(!valid) return;
+
                 const newProduct = {
                     name: this.newProduct.name,
                     description: this.newProduct.description,
@@ -115,10 +136,17 @@
                         console.log(res);
                         if (res.status === 201) {
                             this.$q.notify({
-                                message: `Product Number: ${res.data.productNumber} created`,
+                                message: `Product Number: ${res.data.productNumber}, '${res.data.name}' created`,
                                 color: 'positive',
                                 classes: 'notification'
-                            })
+                            });
+                            this.clearProduct();
+                            if (this.productFilter) {
+                                this.getAllProductsByCategory(this.productFilter);
+                                return;
+                            }
+
+                            this.getAllProducts();
                         }
                     })
                     .catch(err => {
@@ -128,7 +156,7 @@
                                 message: 'One or more validation errors occurred',
                                 color: 'warning',
                                 classes: 'notification'
-                            })
+                            });
                         }
                     })
             },
@@ -139,6 +167,35 @@
                     price: null,
                     categoryId: null
                 }
+            },
+            createCategory() {
+                this.$axios.post('https://localhost:5001/api/v1/category', this.newCategory)
+                    .then(res => {
+                        console.log(res);
+                        if (res.status === 201) {
+                            this.$q.notify({
+                                message: `${res.data.name} category created`,
+                                color: 'positive',
+                                classes: 'notification'
+                            });
+                            this.clearCategory();
+                            this.getAllCategories();
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err.response);
+                        if (err.response.status === 400 && err.response.data === "Category already exists") {
+                            this.$q.notify({
+                                message: 'Category already exists',
+                                color: 'warning',
+                                classes: 'notification'
+                            });
+                            this.clearCategory();
+                        }
+                    })
+            },
+            clearCategory() {
+                this.newCategory.name = null;
             },
             getAllProductsByCategory(name) {
                 this.tableLoading = true;
